@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAC Art Studio - YouTube Gallery</title>
+    <style>
+        :root {
+            --primary-color: #6a4c93;
+            --primary-dark: #4a2c7a;
+            --primary-light: #8a6cb3;
+            --secondary-color: #333;
+            --accent-color: #ff6b6b;
+            --accent-dark: #e05555;
+            --text-color: #333;
+            --light-gray: #f8f9fa;
+            --dark-gray: #6c757d;
+            --white: #ffffff;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.15);
+            --gradient: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Background decorative elements */
+        .bg-shape-1 {
+            position: fixed;
+            top: -200px;
+            right: -200px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(106,76,147,0.1) 0%, rgba(106,76,147,0) 70%);
+            z-index: -1;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .bg-shape-2 {
+            position: fixed;
+            bottom: -300px;
+            left: -300px;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(255,107,107,0.1) 0%, rgba(255,107,107,0) 70%);
+            z-index: -1;
+            animation: float 12s ease-in-out infinite;
+            animation-delay: 2s;
+        }
+
+        .bg-shape-3 {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 1000px;
+            height: 1000px;
+            background: radial-gradient(circle, rgba(106,76,147,0.05) 0%, rgba(106,76,147,0) 70%);
+            z-index: -1;
+            animation: pulse 15s ease-in-out infinite;
+        }
+        
+        header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            animation: fadeInDown 0.8s ease-out;
+            backdrop-filter: blur(5px);
+            background-color: rgba(255,255,255,0.9);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+        
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gradient);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.5s ease;
+        }
+
+        .logo:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        .logo i {
+            font-size: 1.5rem;
+        }
+        
+        .logo span {
+            color: var(--secondary-color);
+        }
+        
+        .youtube-btn {
+            background: var(--gradient);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(106,76,147,0.3);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .youtube-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .youtube-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(106,76,147,0.4);
+        }
+
+        .youtube-btn:hover::before {
+            left: 100%;
+        }
+        
+        .youtube-btn i {
+            font-size: 1.2rem;
+        }
+        
+        .search-container {
+            margin: 40px 0 30px;
+            position: relative;
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 16px 24px;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            font-size: 1rem;
+            padding-left: 50px;
+            outline: none;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            background-color: rgba(255,255,255,0.8);
+            backdrop-filter: blur(5px);
+        }
+        
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 16px rgba(106,76,147,0.2);
+            transform: translateY(-2px);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--dark-gray);
+            font-size: 1.1rem;
+        }
+        
+        .categories {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 15px 5px;
+            margin: 20px 0;
+            position: relative;
+            scrollbar-width: thin;
+            animation: fadeIn 0.8s ease-out 0.3s both;
+        }
+        
+        .categories::-webkit-scrollbar {
+            height: 6px;
+        }
+        
+        .categories::-webkit-scrollbar-thumb {
+            background-color: rgba(106,76,147,0.3);
+            border-radius: 10px;
+        }
+        
+        .category-btn {
+            background-color: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            padding: 8px 18px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .category-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(255,255,255,0.3), rgba(255,255,255,0));
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .category-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-btn:hover::after {
+            opacity: 1;
+        }
+        
+        .category-btn.active {
+            background: var(--gradient);
+            color: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 14px rgba(106,76,147,0.3);
+        }
+        
+        .category-btn i {
+            font-size: 0.9rem;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+            animation: fadeIn 0.8s ease-out 0.4s both;
+        }
+        
+        .sort-controls {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .sort-btn {
+            background-color: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            padding: 8px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .sort-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sort-btn.active {
+            background: var(--gradient);
+            color: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 14px rgba(106,76,147,0.3);
+        }
+        
+        .results-count {
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .videos-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 20px 0 40px;
+            animation: fadeIn 0.8s ease-out 0.5s both;
+        }
+        
+        .video-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            transition: var(--transition);
+            position: relative;
+            transform: translateY(0);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .video-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+        }
+        
+        .video-thumbnail {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 aspect ratio */
+            background-color: #000;
+            cursor: pointer;
+            transition: var(--transition);
+            overflow: hidden;
+        }
+        
+        .video-thumbnail::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(transparent 60%, rgba(0,0,0,0.7));
+            z-index: 1;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .video-thumbnail:hover::before {
+            opacity: 1;
+        }
+        
+        .video-thumbnail::after {
+            content: '\f04b';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 2.5rem;
+            opacity: 0.8;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 2;
+            transition: var(--transition);
+        }
+        
+        .video-thumbnail:hover::after {
+            transform: translate(-50%, -50%) scale(1.1);
+            opacity: 1;
+        }
+        
+        .video-thumbnail img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .video-thumbnail:hover img {
+            transform: scale(1.05);
+        }
+        
+        .video-info {
+            padding: 18px;
+            position: relative;
+        }
+
+        .video-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gradient);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s ease;
+        }
+
+        .video-card:hover .video-info::before {
+            transform: scaleX(1);
+        }
+        
+        .video-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            font-size: 1.05rem;
+            line-height: 1.4;
+            transition: color 0.3s ease;
+        }
+
+        .video-card:hover .video-title {
+            color: var(--primary-color);
+        }
+        
+        .video-category {
+            font-size: 0.75rem;
+            color: white;
+            background: var(--gradient);
+            padding: 4px 10px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-top: 8px;
+            font-weight: 500;
+            transition: var(--transition);
+            box-shadow: 0 2px 5px rgba(106,76,147,0.2);
+        }
+        
+        .video-player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            z-index: 3;
+        }
+        
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 0;
+            color: var(--dark-gray);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .no-results i {
+            font-size: 3rem;
+            opacity: 0.3;
+        }
+        
+        .no-results h3 {
+            font-weight: 500;
+            font-size: 1.3rem;
+        }
+        
+        .no-results p {
+            font-size: 0.95rem;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        footer {
+            background: var(--gradient);
+            color: white;
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            z-index: 0;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+        }
+        
+        .social-links a {
+            color: white;
+            font-size: 1.3rem;
+            transition: var(--transition);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255,255,255,0.1);
+            backdrop-filter: blur(5px);
+        }
+        
+        .social-links a:hover {
+            color: white;
+            transform: translateY(-5px);
+            background-color: rgba(255,255,255,0.2);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .copyright {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Floating decorative elements */
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(2px);
+            z-index: -1;
+        }
+
+        .shape-1 {
+            width: 100px;
+            height: 100px;
+            top: 20%;
+            left: 10%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .shape-2 {
+            width: 150px;
+            height: 150px;
+            bottom: 15%;
+            right: 10%;
+            animation: float 10s ease-in-out infinite reverse;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.05;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 0.1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.05;
+            }
+        }
+        
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .videos-container {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+                gap: 20px;
+            }
+            
+            .categories {
+                gap: 10px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .logo {
+                justify-content: center;
+            }
+            
+            .youtube-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+
+            .bg-shape-1, .bg-shape-2, .bg-shape-3 {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .videos-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .category-btn {
+                padding: 6px 14px;
+                font-size: 0.85rem;
+            }
+            
+            .search-input {
+                padding: 14px 20px;
+                padding-left: 45px;
+            }
+            
+            .youtube-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .footer-logo {
+                font-size: 1.5rem;
+            }
+
+            .social-links a {
+                width: 40px;
+                height: 40px;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Background decorative elements -->
+    <div class="bg-shape-1"></div>
+    <div class="bg-shape-2"></div>
+    <div class="bg-shape-3"></div>
+    
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-palette"></i>
+                <span>MAC Art Studio</span>
+            </div>
+            <a href="https://www.youtube.com/@macartstudio90/videos" target="_blank" class="youtube-btn">
+                <i class="fab fa-youtube"></i> Visit YouTube Channel
+            </a>
+        </div>
+    </header>
+    
+    <main class="container">
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search videos by title or category...">
+        </div>
+        
+        <div class="categories">
+            <button class="category-btn active" data-category="all">
+                <i class="fas fa-list"></i> All Videos
+            </button>
+            <button class="category-btn" data-category="portrait">
+                <i class="fas fa-user"></i> Portrait
+            </button>
+            <button class="category-btn" data-category="celebrity">
+                <i class="fas fa-star"></i> Celebrity
+            </button>
+            <button class="category-btn" data-category="tutorial">
+                <i class="fas fa-graduation-cap"></i> Tutorials
+            </button>
+            <button class="category-btn" data-category="animal">
+                <i class="fas fa-paw"></i> Animals
+            </button>
+            <button class="category-btn" data-category="islamic">
+                <i class="fas fa-mosque"></i> Islamic
+            </button>
+            <button class="category-btn" data-category="children">
+                <i class="fas fa-child"></i> Children
+            </button>
+            <button class="category-btn" data-category="hyperrealistic">
+                <i class="fas fa-search-plus"></i> Hyper-Realistic
+            </button>
+        </div>
+        
+        <div class="controls">
+            <div class="sort-controls">
+                <button class="sort-btn active" id="sortNewest">
+                    <i class="fas fa-arrow-down"></i> Newest First
+                </button>
+                <button class="sort-btn" id="sortOldest">
+                    <i class="fas fa-arrow-up"></i> Oldest First
+                </button>
+            </div>
+            <div class="results-count" id="resultsCount">
+                <i class="fas fa-video"></i> <span>Loading videos...</span>
+            </div>
+        </div>
+        
+        <div class="videos-container" id="videosContainer">
+            <!-- Videos will be inserted here by JavaScript -->
+        </div>
+    </main>
+    
+    <footer>
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        
+        <div class="container footer-content">
+            <div class="footer-logo">
+                <i class="fas fa-palette"></i>
+                <span>MAC Art Studio</span>
+            </div>
+            <div class="social-links">
+                <a href="https://www.youtube.com/@macartstudio90" target="_blank"><i class="fab fa-youtube"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+            </div>
+            <p class="copyright">&copy; 2023 MAC Art Studio. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Video data in chronological order (oldest first)
+        const videos = [
+            // Still Life & Objects (oldest videos)
+            { id: "TbPPFGHNu8I", title: "Apple Artwork Drawing Demo", category: ["stilllife"] },
+            { id: "67EWHA4w4Q8", title: "Gesso on Canvas Tutorial", category: ["supplies", "tutorial"] },
+            { id: "GABBqB_-onk", title: "Banana Drawing Beginners Guide", category: ["stilllife", "tutorial"] },
+            { id: "BGq2wVsObUY", title: "Apple Drawing Tutorial", category: ["stilllife", "tutorial"] },
+            
+            // Islamic Art
+            { id: "zbLsCHuKdfs", title: "Masjid Nabawi Step-by-Step Art", category: ["islamic", "tutorial"] },
+            { id: "QSnJ01EUSHw", title: "Madina Oil Painting Demo", category: ["islamic"] },
+            { id: "BPeJqMebn0Y", title: "Leopard Acrylic Painting Tutorial", category: ["animal", "tutorial"] },
+            { id: "HRCD_UjSfOc", title: "Artist Acrylic Paint Set", category: ["supplies"] },
+            { id: "ouLMIobQFEY", title: "Madina Marker Portrait Art", category: ["islamic"] },
+            { id: "CkpbOoqVVQ4", title: "Madina Realistic Pencil Drawing", category: ["islamic"] },
+            { id: "_RVWi5DEMBs", title: "Arabic Calligraphy Artwork", category: ["islamic"] },
+            { id: "lxhxa8FMRsU", title: "Tablet Realistic Eye Tutorial", category: ["supplies", "tutorial"] },
+            
+            // Children/Baby
+            { id: "SgkpGPHpYrE", title: "Mother & Baby Sketch", category: ["children"] },
+            { id: "NRJwhjYDorc", title: "Benazir Bhutto Memorial Portrait", category: ["portrait"] },
+            
+            // Hyper-Realistic
+            { id: "cfZmd5YV6yA", title: "Bugatti Veyron Car Drawing", category: ["hyperrealistic"] },
+            { id: "-CLU2UaynJw", title: "Realism Face Sketch Tutorial", category: ["hyperrealistic", "tutorial"] },
+            { id: "CYjjvWPrSmQ", title: "Newborn Baby Sketch Tutorial", category: ["children", "tutorial"] },
+            { id: "kAC0qWiStfE", title: "Giraffe Ballpoint Drawing Tutorial", category: ["animal", "tutorial"] },
+            { id: "TFrAHdhyqUQ", title: "Hyper Realistic Hourglass Art", category: ["hyperrealistic"] },
+            { id: "novIwtU643o", title: "Smiling Boy Ballpoint Sketch", category: ["hyperrealistic"] },
+            { id: "sdDHIhi9cq8", title: "3D Medal Ballpoint Art", category: ["hyperrealistic"] },
+            
+            // Portrait Drawings
+            { id: "OOfjD3oa1-s", title: "Balla Khatoon Realistic Portrait", category: ["portrait"] },
+            { id: "0aqY0_Kh3PU", title: "Galileo Galilei Portrait Art", category: ["celebrity"] },
+            { id: "S1DFxp0k3fE", title: "4-Year-Old Child Sketch", category: ["children"] },
+            { id: "k0Vp3E4odkQ", title: "Realistic Cat Pencil Drawing", category: ["animal"] },
+            { id: "RzznwR9SF14", title: "Arif Alvi Portrait Sketch", category: ["portrait"] },
+            { id: "Y2uXw0hDpOY", title: "777 Charlie Dog Drawing", category: ["animal"] },
+            { id: "0v8i31Z5ak8", title: "Rakshit Shetty Portrait Art", category: ["portrait"] },
+            { id: "XnPkcH0zQfY", title: "Realistic Pencil Sketch Demo", category: ["portrait"] },
+            { id: "SlSsLuI1MWU", title: "Beginners Realistic Sketch Guide", category: ["tutorial"] },
+            { id: "WxMNppCOJe4", title: "Hyper Realistic Eye Tutorial", category: ["hyperrealistic", "tutorial"] },
+            { id: "KD7shmVimn4", title: "Allama Iqbal Step-by-Step Sketch", category: ["tutorial"] },
+            { id: "W1WB_954-kg", title: "Maulana Johar Portrait Art", category: ["portrait"] },
+            { id: "JLxKxJCXWZY", title: "Baby Infection Realistic Sketch", category: ["children"] },
+            { id: "RhtEdFN0zbs", title: "Wolfgang Pauli Child Drawing", category: ["children"] },
+            { id: "FQVXiJdG6NY", title: "Norman Shumway Heart Sketch", category: ["celebrity"] },
+            { id: "YZ6puV9Jn-0", title: "Mother's Day Pencil Art", category: ["competition"] },
+            { id: "Vk0lU2zZL24", title: "Imran Khan Portrait Sketch", category: ["portrait"] },
+            { id: "YMWKZde9eZM", title: "GAMOO Sketch Competition Entry", category: ["competition"] },
+            { id: "aaJzDcDOw6w", title: "Horse Pencil Drawing Tutorial", category: ["animal", "tutorial"] },
+            { id: "DIoVbDKYY2g", title: "Madina Munawara Pencil Art", category: ["islamic"] },
+            { id: "vhZyvdR2E90", title: "Pencil Portrait Sketch Tutorial", category: ["tutorial"] },
+            { id: "zpYI5hiio5o", title: "Tariq Jameel Pencil Sketch", category: ["portrait"] },
+            { id: "RanPMmzW1hU", title: "Atif Aslam Portrait Drawing", category: ["portrait"] },
+            { id: "Ok8uVRuQSp8", title: "75 Rupees Note Art", category: ["stilllife"] },
+            { id: "bJmtHmCge1I", title: "Albert Einstein Drawing Tutorial", category: ["celebrity", "tutorial"] },
+            // Newest video (last in array)
+            { id: "kYNWgX2oEb0", title: "Muntazir Ali Channa Portrait Sketch", category: ["portrait"] }
+        ];
+
+        // DOM elements
+        const videosContainer = document.getElementById('videosContainer');
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        const sortNewestBtn = document.getElementById('sortNewest');
+        const sortOldestBtn = document.getElementById('sortOldest');
+        const searchInput = document.getElementById('searchInput');
+        const resultsCount = document.getElementById('resultsCount').querySelector('span');
+        let currentPlayingVideo = null;
+        let currentSort = 'desc'; // default sort: newest first
+        let currentFilter = 'all'; // default filter: all videos
+        let currentSearchTerm = ''; // default search term: empty
+
+        // Display all videos
+        function displayVideos(filter = 'all', sort = 'desc', searchTerm = '') {
+            // Show loading state
+            videosContainer.innerHTML = '';
+            resultsCount.textContent = 'Loading videos...';
+            
+            // Simulate loading delay for better UX
+            setTimeout(() => {
+                // Filter videos by category and search term
+                const filteredVideos = videos.filter(video => {
+                    const matchesCategory = filter === 'all' || video.category.includes(filter);
+                    const matchesSearch = searchTerm === '' || 
+                        video.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                        video.category.some(cat => cat.toLowerCase().includes(searchTerm.toLowerCase()));
+                    return matchesCategory && matchesSearch;
+                });
+                
+                // Sort videos
+                const sortedVideos = [...filteredVideos];
+                if (sort === 'asc') {
+                    // For oldest first, reverse the array (since our data is oldest first)
+                    sortedVideos.reverse();
+                }
+                
+                // Update results count
+                resultsCount.textContent = `${sortedVideos.length} video${sortedVideos.length !== 1 ? 's' : ''} found`;
+                
+                // Display videos or no results message
+                if (sortedVideos.length === 0) {
+                    videosContainer.innerHTML = `
+                        <div class="no-results">
+                            <i class="fas fa-search"></i>
+                            <h3>No videos found</h3>
+                            <p>Try a different search term or category</p>
+                        </div>
+                    `;
+                } else {
+                    // Add staggered animation delay
+                    sortedVideos.forEach((video, index) => {
+                        const videoCard = document.createElement('div');
+                        videoCard.className = 'video-card';
+                        videoCard.dataset.category = video.category.join(' ');
+                        videoCard.style.animationDelay = `${index * 0.05}s`;
+                        
+                        videoCard.innerHTML = `
+                            <div class="video-thumbnail" data-video-id="${video.id}">
+                                <img src="https://img.youtube.com/vi/${video.id}/hqdefault.jpg" alt="${video.title}">
+                            </div>
+                            <div class="video-info">
+                                <h3 class="video-title">${video.title}</h3>
+                                <span class="video-category">${video.category[0]}</span>
+                            </div>
+                        `;
+                        
+                        videosContainer.appendChild(videoCard);
+                    });
+                }
+                
+                // Add event listeners to thumbnails
+                document.querySelectorAll('.video-thumbnail').forEach(thumbnail => {
+                    thumbnail.addEventListener('click', playVideo);
+                });
+            }, 300); // Small delay for better UX
+        }
+
+        // Play video function with enhanced animation
+        function playVideo(e) {
+            const thumbnail = e.currentTarget;
+            const videoId = thumbnail.dataset.videoId;
+            
+            // Pause currently playing video if any
+            if (currentPlayingVideo) {
+                const iframe = currentPlayingVideo.querySelector('iframe');
+                if (iframe) {
+                    iframe.src = ''; // Stop the video
+                }
+                currentPlayingVideo.innerHTML = `
+                    <img src="https://img.youtube.com/vi/${currentPlayingVideo.dataset.videoId}/hqdefault.jpg" alt="">
+                `;
+                currentPlayingVideo.style.transform = 'scale(1)';
+                currentPlayingVideo.addEventListener('click', playVideo);
+            }
+            
+            // Add loading indicator
+            thumbnail.innerHTML = `
+                <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:2">
+                    <div class="loading"></div>
+                </div>
+                <img src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" alt="">
+            `;
+            
+            // After a small delay, load the video
+            setTimeout(() => {
+                thumbnail.innerHTML = `
+                    <iframe class="video-player" src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                `;
+                thumbnail.style.transform = 'scale(1.02)';
+                thumbnail.style.boxShadow = '0 15px 30px rgba(0,0,0,0.2)';
+            }, 500);
+            
+            thumbnail.removeEventListener('click', playVideo);
+            currentPlayingVideo = thumbnail;
+            
+            // Smooth scroll to video
+            setTimeout(() => {
+                thumbnail.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
+
+        // Filter videos by category
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Add click animation
+                btn.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    btn.style.transform = '';
+                }, 200);
+                
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.category;
+                displayVideos(currentFilter, currentSort, currentSearchTerm);
+            });
+        });
+
+        // Sort controls with animation
+        sortNewestBtn.addEventListener('click', () => {
+            if (currentSort !== 'desc') {
+                currentSort = 'desc';
+                sortNewestBtn.classList.add('active');
+                sortOldestBtn.classList.remove('active');
+                
+                // Add click animation
+                sortNewestBtn.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    sortNewestBtn.style.transform = '';
+                }, 200);
+                
+                displayVideos(currentFilter, currentSort, currentSearchTerm);
+            }
+        });
+        
+        sortOldestBtn.addEventListener('click', () => {
+            if (currentSort !== 'asc') {
+                currentSort = 'asc';
+                sortOldestBtn.classList.add('active');
+                sortNewestBtn.classList.remove('active');
+                
+                // Add click animation
+                sortOldestBtn.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    sortOldestBtn.style.transform = '';
+                }, 200);
+                
+                displayVideos(currentFilter, currentSort, currentSearchTerm);
+            }
+        });
+
+        // Search functionality with debounce
+        let searchTimeout;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            currentSearchTerm = e.target.value.trim();
+            
+            // Show loading state during search
+            resultsCount.textContent = 'Searching...';
+            
+            searchTimeout = setTimeout(() => {
+                displayVideos(currentFilter, currentSort, currentSearchTerm);
+            }, 300);
+        });
+
+        // Initialize the page with newest videos first
+        displayVideos();
+        sortNewestBtn.classList.add('active');
+    </script>
+</body>
+</html>
